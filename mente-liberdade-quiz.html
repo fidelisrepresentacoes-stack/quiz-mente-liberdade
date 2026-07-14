@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desafio das Pegadinhas — Mente em Liberdade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#0A1F3D;
+    --navy-ink:#071527;
+    --gold:#C9A227;
+    --gold-light:#E8C766;
+    --parchment:#F6F3EA;
+    --ink:#1C2B3A;
+    --ink-soft:#4A5568;
+    --green:#2E7D4F;
+    --red:#B23A3A;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Inter', sans-serif;
+    color:var(--ink);
+    background:var(--parchment);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+  }
+  .serif{font-family:'Fraunces', serif;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+
+  .screen{
+    display:none;
+    min-height:100vh;
+    width:100%;
+    padding:0 24px;
+  }
+  .screen.active{display:flex; flex-direction:column;}
+
+  /* ---------- HERO ---------- */
+  #hero{
+    background:radial-gradient(120% 140% at 50% 0%, #123258 0%, var(--navy-deep) 55%, var(--navy-ink) 100%);
+    color:var(--white);
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding-top:64px;
+    padding-bottom:56px;
+    position:relative;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.28em;
+    color:var(--gold-light);
+    text-transform:uppercase;
+    margin-bottom:22px;
+    opacity:0;
+    animation:fadeUp .7s ease forwards;
+  }
+  .free-badge{
+    display:inline-block;
+    background:rgba(46,125,79,0.15);
+    border:1px solid #4CAF7D;
+    color:#6FE0A5;
+    font-family:'Inter', sans-serif;
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:0.04em;
+    padding:6px 16px;
+    border-radius:20px;
+    margin-bottom:18px;
+    opacity:0;
+    animation:fadeUp .7s ease .05s forwards;
+  }
+  .hero-title{
+    font-size:clamp(28px, 7vw, 44px);
+    line-height:1.18;
+    font-weight:600;
+    max-width:640px;
+    margin:0 auto 20px;
+    opacity:0;
+    animation:fadeUp .7s ease .12s forwards;
+  }
+  .hero-title em{
+    font-style:italic;
+    color:var(--gold-light);
+  }
+  .hero-sub{
+    font-size:16px;
+    color:#C7D2E3;
+    max-width:420px;
+    margin:0 auto 36px;
+    line-height:1.55;
+    opacity:0;
+    animation:fadeUp .7s ease .24s forwards;
+  }
+  @keyframes fadeUp{
+    from{opacity:0; transform:translateY(14px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .gabarito-strip{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    margin-bottom:36px;
+    opacity:0;
+    animation:fadeUp .7s ease .34s forwards;
+  }
+  .gabarito-dot{
+    width:10px; height:10px;
+    border-radius:50%;
+    border:1.5px solid rgba(232,199,102,0.5);
+  }
+  .gabarito-dot.filled{background:var(--gold-light); border-color:var(--gold-light);}
+
+  .btn-gold{
+    font-family:'Inter', sans-serif;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:0.02em;
+    color:var(--navy-ink);
+    background:linear-gradient(180deg, var(--gold-light), var(--gold));
+    border:none;
+    padding:18px 38px;
+    border-radius:6px;
+    cursor:pointer;
+    box-shadow:0 8px 24px rgba(201,162,39,0.28);
+    transition:transform .15s ease, box-shadow .15s ease;
+    opacity:0;
+    animation:fadeUp .7s ease .42s forwards;
+  }
+  .btn-gold:hover{transform:translateY(-2px); box-shadow:0 12px 28px rgba(201,162,39,0.38);}
+  .btn-gold:active{transform:translateY(0);}
+  .btn-gold:focus-visible{outline:3px solid var(--gold-light); outline-offset:3px;}
+
+  .hero-foot{
+    margin-top:28px;
+    font-size:12.5px;
+    color:#8FA1BE;
+    max-width:320px;
+    opacity:0;
+    animation:fadeUp .7s ease .5s forwards;
+  }
+  .hero-foot strong{color:#C7D2E3;}
+
+  /* ---------- QUIZ ---------- */
+  #quiz{
+    background:var(--parchment);
+    align-items:center;
+    justify-content:flex-start;
+    padding-top:40px;
+    padding-bottom:40px;
+  }
+  .quiz-card{
+    background:var(--white);
+    border:1px solid #E4DFCF;
+    border-radius:12px;
+    max-width:480px;
+    width:100%;
+    margin:0 auto;
+    padding:32px 26px 28px;
+    box-shadow:0 2px 0 #E4DFCF, 0 20px 40px -20px rgba(10,31,61,0.25);
+  }
+  .quiz-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .quiz-count{
+    font-size:13px;
+    color:var(--ink-soft);
+    letter-spacing:0.05em;
+  }
+  .quiz-count b{color:var(--navy-deep);}
+  .progress-bubbles{display:flex; gap:7px;}
+  .p-bubble{
+    width:9px; height:9px;
+    border-radius:50%;
+    border:1.5px solid #D8CFAE;
+    transition:all .3s ease;
+  }
+  .p-bubble.done{background:var(--navy-deep); border-color:var(--navy-deep);}
+  .p-bubble.now{border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,162,39,0.18);}
+
+  .quiz-question{
+    font-size:20px;
+    line-height:1.4;
+    font-weight:600;
+    color:var(--navy-ink);
+    margin-bottom:24px;
+  }
+
+  .option{
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    width:100%;
+    text-align:left;
+    background:none;
+    border:1.5px solid #E2DCC8;
+    border-radius:9px;
+    padding:14px 16px;
+    margin-bottom:12px;
+    cursor:pointer;
+    font-family:'Inter', sans-serif;
+    font-size:15px;
+    color:var(--ink);
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .option:hover:not(:disabled){border-color:var(--gold);}
+  .option:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+  .option:disabled{cursor:default;}
+
+  .bubble{
+    flex:0 0 auto;
+    width:22px; height:22px;
+    border-radius:50%;
+    border:2px solid #C6BE9F;
+    margin-top:1px;
+    position:relative;
+    transition:all .25s ease;
+  }
+  .bubble::after{
+    content:'';
+    position:absolute;
+    inset:4px;
+    border-radius:50%;
+    background:var(--gold);
+    transform:scale(0);
+    transition:transform .25s cubic-bezier(.34,1.56,.64,1);
+  }
+  .option.selected .bubble::after{transform:scale(1);}
+  .option.selected .bubble{border-color:var(--gold);}
+  .option.correct{background:#F0F7F2; border-color:var(--green);}
+  .option.correct .bubble{border-color:var(--green);}
+  .option.correct .bubble::after{background:var(--green); transform:scale(1);}
+  .option.wrong{background:#FBF1F1; border-color:var(--red);}
+  .option.wrong .bubble{border-color:var(--red);}
+  .option.wrong .bubble::after{background:var(--red); transform:scale(1);}
+
+  .explain{
+    margin-top:6px;
+    margin-bottom:18px;
+    padding:14px 16px;
+    background:#F6F3EA;
+    border-left:3px solid var(--gold);
+    border-radius:4px;
+    font-size:14px;
+    line-height:1.55;
+    color:var(--ink-soft);
+    display:none;
+  }
+  .explain.show{display:block; animation:fadeUp .35s ease;}
+
+  .btn-next{
+    width:100%;
+    background:var(--navy-deep);
+    color:var(--white);
+    border:none;
+    padding:15px;
+    border-radius:8px;
+    font-family:'Inter', sans-serif;
+    font-weight:600;
+    font-size:14.5px;
+    cursor:pointer;
+    display:none;
+    transition:background .15s ease;
+  }
+  .btn-next.show{display:block; animation:fadeUp .35s ease;}
+  .btn-next:hover{background:#0F2A50;}
+
+  /* ---------- RESULT ---------- */
+  #result{
+    background:radial-gradient(120% 140% at 50% 0%, #123258 0%, var(--navy-deep) 55%, var(--navy-ink) 100%);
+    color:var(--white);
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding-top:56px;
+    padding-bottom:48px;
+  }
+  .score-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.24em;
+    color:var(--gold-light);
+    text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  .score-big{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:64px;
+    font-weight:600;
+    color:var(--gold-light);
+    line-height:1;
+    margin-bottom:18px;
+  }
+  .score-big span{font-size:32px; color:#8FA1BE;}
+  .result-title{
+    font-family:'Fraunces', serif;
+    font-size:24px;
+    font-weight:600;
+    max-width:380px;
+    margin:0 auto 14px;
+    line-height:1.3;
+  }
+  .result-sub{
+    font-size:14.5px;
+    color:#C7D2E3;
+    max-width:360px;
+    margin:0 auto 36px;
+    line-height:1.6;
+  }
+
+  /* ---------- OFFER ---------- */
+  .offer-card{
+    background:var(--white);
+    color:var(--ink);
+    border-radius:14px;
+    max-width:400px;
+    width:100%;
+    margin:0 auto;
+    padding:30px 26px;
+    text-align:left;
+  }
+  .offer-eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:10px;
+  }
+  .offer-title{
+    font-family:'Fraunces', serif;
+    font-size:22px;
+    font-weight:600;
+    color:var(--navy-ink);
+    margin-bottom:16px;
+    line-height:1.3;
+  }
+  .offer-list{list-style:none; margin-bottom:22px;}
+  .offer-list li{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    font-size:14.5px;
+    margin-bottom:10px;
+    color:var(--ink);
+  }
+  .offer-list li .check{
+    color:var(--gold);
+    font-weight:700;
+    flex:0 0 auto;
+  }
+  .pages-stat{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    background:var(--navy-deep);
+    border-radius:10px;
+    padding:16px 18px;
+    margin-bottom:18px;
+  }
+  .pages-num{
+    font-size:38px;
+    font-weight:600;
+    color:var(--gold-light);
+    line-height:1;
+    flex:0 0 auto;
+  }
+  .pages-text{
+    font-size:13px;
+    line-height:1.5;
+    color:#C7D2E3;
+  }
+  .pain-line{
+    font-size:14px;
+    line-height:1.6;
+    color:var(--ink-soft);
+    font-style:italic;
+    border-left:3px solid var(--red);
+    padding-left:12px;
+    margin-bottom:20px;
+  }
+  .price-box{
+    background:var(--parchment);
+    border:1.5px dashed var(--gold);
+    border-radius:10px;
+    padding:18px;
+    text-align:center;
+    margin-bottom:20px;
+  }
+  .price-old{
+    font-size:14px;
+    color:#A0A0A0;
+    text-decoration:line-through;
+    margin-bottom:4px;
+  }
+  .price-new{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:34px;
+    font-weight:600;
+    color:var(--navy-deep);
+  }
+  .price-new sup{font-size:16px; top:-14px;}
+  .price-note{font-size:12px; color:var(--ink-soft); margin-top:6px;}
+
+  .btn-cta{
+    display:block;
+    width:100%;
+    text-align:center;
+    text-decoration:none;
+    background:linear-gradient(180deg, var(--gold-light), var(--gold));
+    color:var(--navy-ink);
+    font-weight:700;
+    font-size:15px;
+    padding:17px;
+    border-radius:8px;
+    box-shadow:0 8px 20px rgba(201,162,39,0.3);
+    margin-bottom:14px;
+    transition:transform .15s ease;
+  }
+  .btn-cta:hover{transform:translateY(-2px);}
+
+  .trust-note{
+    text-align:center;
+    font-size:12px;
+    color:#8FA1BE;
+    max-width:320px;
+    margin:0 auto;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<section id="hero" class="screen active">
+  <div class="eyebrow">MENTE EM LIBERDADE</div>
+  <div class="free-badge">✨ TESTE GRATUITO</div>
+  <h1 class="hero-title serif">Você consegue acertar as <em>5 pegadinhas</em> de português que mais enganam brasileiros?</h1>
+  <p class="hero-sub"><strong style="color:#E8C766;">100% GRATUITO</strong> — Descubra em menos de 2 minutos. Sem cadastro, sem enrolação.</p>
+  <div class="gabarito-strip" aria-hidden="true">
+    <div class="gabarito-dot filled"></div>
+    <div class="gabarito-dot filled"></div>
+    <div class="gabarito-dot filled"></div>
+    <div class="gabarito-dot"></div>
+    <div class="gabarito-dot"></div>
+  </div>
+  <button class="btn-gold" onclick="goTo('quiz')">COMEÇAR O DESAFIO GRÁTIS</button>
+  <p class="hero-foot">Mais de <strong>55 armadilhas comentadas</strong> — Português, Interpretação de Texto, Raciocínio Lógico e prévia de Redação — fazem parte da versão completa do Manual.</p>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section id="quiz" class="screen">
+  <div class="quiz-card">
+    <div class="quiz-top">
+      <div class="quiz-count"><b id="qnum">01</b> / 05</div>
+      <div class="progress-bubbles" id="progressBubbles"></div>
+    </div>
+    <div id="quizBody"></div>
+  </div>
+</section>
+
+<!-- ============ RESULT ============ -->
+<section id="result" class="screen">
+  <div class="score-label">SEU RESULTADO</div>
+  <div class="score-big"><span id="scoreNum">0</span><span> / 5</span></div>
+  <h2 class="result-title serif" id="resultTitle">Título do resultado</h2>
+  <p class="result-sub" id="resultSub">Essas cinco questões são apenas uma amostra. O Manual das Pegadinhas reúne as 30 armadilhas mais importantes para concursos — explicadas de forma simples, com macetes fáceis de memorizar.</p>
+
+  <div class="offer-card">
+    <div class="offer-eyebrow">OFERTA ESPECIAL</div>
+    <div class="offer-title serif">📘 Manual das Pegadinhas do Português para Concursos</div>
+
+    <div class="pages-stat">
+      <div class="pages-num mono">55+</div>
+      <div class="pages-text">armadilhas comentadas em Português, Interpretação de Texto e Raciocínio Lógico — mais uma prévia bônus de Redação.</div>
+    </div>
+
+    <ul class="offer-list">
+      <li><span class="check">✓</span> Manual completo — 30 pegadinhas de Português + Interpretação de Texto + Raciocínio Lógico + prévia de Redação</li>
+      <li><span class="check">✓</span> Regra, exemplo, macete e exercício com gabarito em cada uma</li>
+      <li><span class="check">✓</span> Como as bancas escondem a pegadinha (Cebraspe, FGV, FCC e outras)</li>
+      <li><span class="check">✓</span> Revisão Express + Glossário de Confusões Rápidas</li>
+      <li><span class="check">✓</span> Atualizações futuras incluídas</li>
+    </ul>
+
+    <p class="pain-line">Depois de tanto estudo, seria triste perder a vaga por uma bobeira que dava pra ter aprendido em minutos.</p>
+
+    <div class="price-box">
+      <div class="price-old">De R$ 97,00</div>
+      <div class="price-new"><sup>R$</sup> 19,90</div>
+      <div class="price-note">Preço de lançamento por tempo limitado — 4 módulos completos, acesso imediato</div>
+    </div>
+    <a href="#" class="btn-cta" id="ctaLink">QUERO GARANTIR MEU ACESSO</a>
+    <p class="trust-note">Por menos do que o valor de uma pizza, você leva um manual completo que pode acompanhar sua preparação até o dia da prova.</p>
+  </div>
+</section>
+
+<script>
+const questions = [
+  {
+    q: "Qual frase está correta?",
+    options: [
+      "Não há segredos entre eu e você",
+      "Não há segredos entre mim e você"
+    ],
+    correct: 1,
+    explain: "Depois de preposição (\"entre\", \"para\", \"com\"), usa-se \"mim\", nunca \"eu\". Macete: preposição pede \"mim\"."
+  },
+  {
+    q: "Qual frase está correta?",
+    options: [
+      "Ele é um mal aluno",
+      "Ele é um mau aluno"
+    ],
+    correct: 1,
+    explain: "\"Mau\" é adjetivo (opõe-se a \"bom\"). \"Mal\" é advérbio (opõe-se a \"bem\"). Troque por bom/bem para testar."
+  },
+  {
+    q: "Qual frase está correta?",
+    options: [
+      "O edital foi publicado a três meses",
+      "O edital foi publicado há três meses"
+    ],
+    correct: 1,
+    explain: "\"Há\" indica tempo que já passou. \"A\" indica tempo futuro, a partir de agora."
+  },
+  {
+    q: "Qual frase está correta?",
+    options: [
+      "Ele trouxe um bolo para mim",
+      "Ele pediu para eu experimentar o bolo"
+    ],
+    correct: null, // both correct — special case
+    explain: "As duas estão certas! \"Para mim\" quando não vem verbo depois. \"Para eu\" quando vem um verbo no infinitivo em seguida."
+  },
+  {
+    q: "Qual frase está correta?",
+    options: [
+      "Em vez de estudar, ele foi trabalhar",
+      "Ao invés de estudar, ele foi trabalhar"
+    ],
+    correct: 0,
+    explain: "\"Em vez de\" é substituição neutra. \"Ao invés de\" só cabe quando há oposição real de sentido."
+  }
+];
+
+let current = 0;
+let score = 0;
+
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+  if(id === 'quiz') renderQuestion();
+}
+
+function renderProgress(){
+  const wrap = document.getElementById('progressBubbles');
+  wrap.innerHTML = '';
+  for(let i=0;i<questions.length;i++){
+    const d = document.createElement('div');
+    d.className = 'p-bubble' + (i < current ? ' done' : '') + (i === current ? ' now' : '');
+    wrap.appendChild(d);
+  }
+}
+
+function renderQuestion(){
+  renderProgress();
+  document.getElementById('qnum').textContent = String(current+1).padStart(2,'0');
+  const item = questions[current];
+  const body = document.getElementById('quizBody');
+
+  let optsHtml = '';
+  item.options.forEach((opt, i) => {
+    optsHtml += `<button class="option" data-i="${i}" onclick="selectOption(${i})">
+      <span class="bubble"></span><span>${opt}</span>
+    </button>`;
+  });
+
+  body.innerHTML = `
+    <div class="quiz-question serif">${item.q}</div>
+    ${optsHtml}
+    <div class="explain" id="explainBox">${item.explain}</div>
+    <button class="btn-next" id="nextBtn" onclick="nextQuestion()">
+      ${current === questions.length - 1 ? 'Ver meu resultado →' : 'Próxima pergunta →'}
+    </button>
+  `;
+}
+
+function selectOption(i){
+  const item = questions[current];
+  const opts = document.querySelectorAll('.option');
+  const isBothCorrect = item.correct === null;
+
+  opts.forEach((btn, idx) => {
+    btn.disabled = true;
+    if(isBothCorrect){
+      btn.classList.add('correct');
+    } else if(idx === item.correct){
+      btn.classList.add('correct');
+    } else if(idx === i && idx !== item.correct){
+      btn.classList.add('wrong');
+    }
+    if(idx === i) btn.classList.add('selected');
+  });
+
+  if(isBothCorrect || i === item.correct) score++;
+
+  document.getElementById('explainBox').classList.add('show');
+  document.getElementById('nextBtn').classList.add('show');
+}
+
+function nextQuestion(){
+  current++;
+  if(current < questions.length){
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult(){
+  document.getElementById('scoreNum').textContent = score;
+  const title = document.getElementById('resultTitle');
+  const sub = document.getElementById('resultSub');
+
+  if(score <= 1){
+    title.textContent = "As pegadinhas pegaram mesmo.";
+    sub.textContent = "Calma, isso é mais comum do que parece — a maioria dos brasileiros erra essas mesmas armadilhas todos os dias. O Manual das Pegadinhas reúne as 30 mais importantes de português, um módulo inteiro de Interpretação de Texto, Raciocínio Lógico e ainda uma prévia de Redação — explicados de forma simples, com macetes fáceis de memorizar.";
+  } else if(score <= 3){
+    title.textContent = "Você tem uma boa base.";
+    sub.textContent = "Mas ainda existem armadilhas que podem aparecer na prova — inclusive nas questões de interpretação de texto, o tema que mais derruba candidato em todas as bancas. O Manual das Pegadinhas reúne isso tudo, direto ao ponto, com exemplo, macete e exercício de fixação.";
+  } else {
+    title.textContent = "Mandou bem! Mas o jogo tem mais fases.";
+    sub.textContent = "Essas cinco são só uma amostra de português. O Manual das Pegadinhas ainda traz Interpretação de Texto, Raciocínio Lógico e uma prévia de Redação — além das 30 armadilhas mais cobradas de gramática.";
+  }
+
+  goTo('result');
+}
+
+// Placeholder — Fidelis: troque o href abaixo pelo link real da Hotmart
+document.getElementById('ctaLink').href = "https://go.hotmart.com/J106728940U?dp=1";
+</script>
+
+</body>
+</html>
